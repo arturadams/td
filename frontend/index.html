@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tower Defense Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto Mono', monospace; overscroll-behavior: none; }
+        canvas { background-color: #1a202c; cursor: pointer; touch-action: none; }
+        .modal-panel, .control-panel { background-color: rgba(31,41,55,0.95); backdrop-filter: blur(5px); border: 1px solid #4b5563; }
+        .speed-btn.active { background-color: #4f46e5; box-shadow: 0 0 10px #4f46e5; }
+        .no-select { -webkit-touch-callout:none; -webkit-user-select:none; -khtml-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-2 sm:p-4 no-select">
+    <div id="main-menu" class="text-center">
+        <h1 class="text-5xl font-bold mb-8 text-white">Tower Defense</h1>
+        <div class="space-y-4">
+            <button id="start-game-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-lg text-2xl transition-colors shadow-lg">Start Game</button>
+            <button id="settings-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-10 rounded-lg text-2xl transition-colors shadow-lg">Settings</button>
+        </div>
+    </div>
+    <div id="game-container" class="w-full max-w-4xl mx-auto relative hidden">
+        <div class="flex justify-between items-center bg-gray-800 p-3 rounded-t-lg shadow-lg">
+            <div><span class="font-bold">Money: $</span><span id="money" class="font-bold text-green-400">200</span></div>
+            <div><span class="font-bold">Wave: </span><span id="wave" class="font-bold text-yellow-400">0</span></div>
+            <div><span class="font-bold">Health: </span><span id="health" class="font-bold text-red-400">20</span></div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="bg-gray-800 p-3 rounded-b-lg shadow-lg flex justify-between items-center">
+            <button id="waves-info-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">Waves</button>
+            <button id="start-wave-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">Start Wave</button>
+            <div id="speed-controls" class="flex items-center gap-2">
+                <button id="speed-1x" class="speed-btn bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">1x</button>
+                <button id="speed-2x" class="speed-btn bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">2x</button>
+                <button id="speed-4x" class="speed-btn bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">4x</button>
+            </div>
+        </div>
+        <div id="control-panel" class="hidden absolute control-panel p-4 rounded-lg shadow-2xl w-64">
+            <h3 id="panel-title" class="text-xl font-bold mb-3 text-center"></h3>
+            <div id="panel-content" class="flex flex-col gap-2"></div>
+            <button id="panel-close-btn" class="absolute top-2 right-2 text-gray-400 hover:text-white">&times;</button>
+        </div>
+    </div>
+    <div id="modal-backdrop" class="hidden fixed inset-0 bg-black bg-opacity-75 z-40"></div>
+    <div id="game-over-modal" class="hidden fixed inset-0 flex items-center justify-center z-50">
+        <div class="modal-panel p-8 rounded-lg text-center shadow-2xl">
+            <h2 id="modal-title" class="text-3xl font-bold mb-4">Game Over</h2>
+            <p id="modal-message" class="text-lg mb-6">You have been defeated!</p>
+            <button id="restart-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Play Again</button>
+        </div>
+    </div>
+    <div id="settings-modal" class="hidden fixed inset-0 flex items-center justify-center z-50">
+        <div class="modal-panel p-8 rounded-lg shadow-2xl w-full max-w-md">
+            <h2 class="text-3xl font-bold mb-6 text-center">Settings</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="sell-multiplier-slider" class="block mb-2">Sell Price Multiplier: <span id="sell-multiplier-value">0.5</span></label>
+                    <input type="range" id="sell-multiplier-slider" min="0.1" max="1.0" step="0.05" class="w-full">
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button id="settings-close-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Close</button>
+            </div>
+        </div>
+    </div>
+    <div id="waves-modal" class="hidden fixed inset-0 flex items-center justify-center z-50">
+        <div class="modal-panel p-8 rounded-lg shadow-2xl w-full max-w-lg">
+            <h2 class="text-3xl font-bold mb-6 text-center">Upcoming Waves</h2>
+            <div id="waves-info-content" class="space-y-3 max-h-96 overflow-y-auto"></div>
+            <div class="text-center mt-8">
+                <button id="waves-close-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Close</button>
+            </div>
+        </div>
+    </div>
+    <script src="/game.js"></script>
+</body>
+</html>
